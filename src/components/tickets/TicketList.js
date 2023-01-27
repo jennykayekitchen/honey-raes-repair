@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "./Tickets.css"
 
+//seachTermsState is a variable that we've passed into TicketList as a prop, and we've destructured the object so we can pull out the info
 export const TicketList = ({ searchTermsState }) => {
     const [tickets, setTickets] = useState([])
     const [filteredTickets, setFiltered] = useState([])
@@ -13,6 +14,7 @@ export const TicketList = ({ searchTermsState }) => {
     const localHoneyUser = localStorage.getItem("honey_user")
     const honeyUserObject = JSON.parse(localHoneyUser)
 
+    //useEffect = what to do when stuff in [] changes and / or initial render if [])
     useEffect(
         () => {
             const searchedTickets = tickets.filter(ticket => {
@@ -22,6 +24,7 @@ export const TicketList = ({ searchTermsState }) => {
         },
         [ searchTermsState ]
     )
+
     useEffect(
         () => {
             if (emergency) {
