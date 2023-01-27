@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import "./Tickets.css"
 
 //seachTermsState is a variable that we've passed into TicketList as a prop, and we've destructured the object so we can pull out the info
@@ -92,16 +92,17 @@ export const TicketList = ({ searchTermsState }) => {
             <button onClick={() => UpdateOpenOnly(false)}>All My Tickets</button>
             </>
     }
-
+    
     <h2>List of Tickets</h2>
 
     <article className="tickets">
         {
             filteredTickets.map(
-                (filteredTickets) => {
-                    return <section className="ticket">
-                        <header>{filteredTickets.description}</header>
-                        <footer>Emergency: {filteredTickets.emergency ? "Yes" : "No"} </footer>
+                (filteredTicket) => {
+                    return <section className="ticket" key={filteredTicket.id}>
+                        <header><Link to={`/tickets/${filteredTicket.id}/edit`}>Ticket {filteredTicket.id}</Link></header>
+                        <div>{filteredTicket.description}</div>
+                        <footer>Emergency: {filteredTicket.emergency ? "🧨" : "No"} </footer>
                     </section>
                 }
             )
@@ -109,4 +110,3 @@ export const TicketList = ({ searchTermsState }) => {
     </article>
     </>
 }
-
