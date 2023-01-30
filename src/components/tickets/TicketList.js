@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { Ticket } from "./Ticket"
 import "./Tickets.css"
 
 //seachTermsState is a variable that we've passed into TicketList as a prop, and we've destructured the object so we can pull out the info
 export const TicketList = ({ searchTermsState }) => {
     const [tickets, setTickets] = useState([])
+    const [employees, setEmployees] = useState([])
     const [filteredTickets, setFiltered] = useState([])
     const [emergency, setEmergency] = useState(false)
     const [openOnly, UpdateOpenOnly] = useState(false)
@@ -38,12 +40,24 @@ export const TicketList = ({ searchTermsState }) => {
         [emergency]
     )
 
+    const getAllTickets = () => {
+        
+                fetch(`http://localhost:8088/serviceTickets?_embed=employeeTickets`)
+                    .then(response => response.json())
+                    .then((ticketArray) => {
+                    setTickets(ticketArray)
+                })
+    }
+  
+
     useEffect(
         () => {
-            fetch(`http://localhost:8088/serviceTickets`)
+            getAllTickets()
+
+            fetch(`http://localhost:8088/employees?_expand=user`)
                 .then(response => response.json())
-                .then((ticketArray) => {
-                setTickets(ticketArray)
+                .then((employeeArray) => {
+                setEmployees(employeeArray)
             })   
     
         },
@@ -92,21 +106,19 @@ export const TicketList = ({ searchTermsState }) => {
             <button onClick={() => UpdateOpenOnly(false)}>All My Tickets</button>
             </>
     }
-    
+
     <h2>List of Tickets</h2>
 
     <article className="tickets">
         {
             filteredTickets.map(
-                (filteredTicket) => {
-                    return <section className="ticket" key={filteredTicket.id}>
-                        <header><Link to={`/tickets/${filteredTicket.id}/edit`}>Ticket {filteredTicket.id}</Link></header>
-                        <div>{filteredTicket.description}</div>
-                        <footer>Emergency: {filteredTicket.emergency ? "🧨" : "No"} </footer>
-                    </section>
-                }
+                (filteredTickets) => <Ticket employees={employees}
+                getAllTickets={getAllTickets} 
+                currentUser={honeyUserObject} 
+                ticketObject={filteredTickets} />
             )
         }
     </article>
     </>
 }
+
